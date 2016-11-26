@@ -12,7 +12,7 @@ def redis_job_query(keyword, city):
 
     r = StrictRedis(host='localhost', port=6379, db=0)
     all_keys = r.keys()
-
+    container = None
     if keyword in all_keys:
         container = r.hget(keyword, city)
 

@@ -45,7 +45,7 @@ def get_data_from_db():
     job_list = redis_job_query(keyword, city)
 
     # If not in db parse all key to find the keyword and save the query in db
-    if len(job_list) == 0:
+    if not job_list or len(job_list) == 0:
         query = query_with_tag(keyword)
         if city and city in query.keys():
             job_list = query[city]
