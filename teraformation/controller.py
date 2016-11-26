@@ -4,7 +4,7 @@ from __future__ import (absolute_import, division, print_function)
 import json
 from flask import Blueprint, jsonify, request, session
 from werkzeug.wrappers import Response
-from redis_query import redis_job_query, create_tag
+from teraformation.redis_query import redis_job_query, query_with_tag
 
 api_v1 = Blueprint('teraformation', __name__)
 
