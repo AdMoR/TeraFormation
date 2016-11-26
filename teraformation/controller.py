@@ -38,7 +38,7 @@ def get_data_from_db():
     js = request.get_json()
 
     # Get main params
-    city = js.get('city') or ''
+    city = js.get('city')
     keyword = js.get('keyword') or ''
 
     # Search in db
@@ -46,11 +46,16 @@ def get_data_from_db():
 
     # If not in db parse all key to find the keyword and save the query in db
     if len(job_list) == 0:
-        create_tag(keyword)
-        job_list = redis_job_query(keyword, city)
+        query = query_with_tag(keyword)
+        if city and city in query.keys():
+            job_list = query[city]
+        else:
+            job_list = None
+            if not city:
+                job_list = query
 
     code, response = 200, {'status': 'ok',
                            'status_message': 'Query went fine',
-                           'data': {"Job title": "Expert"}}
+                           'data': job_list}
 
     return jsonify(response), code

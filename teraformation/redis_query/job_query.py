@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import (absolute_import, division, print_function)
 from redis import StrictRedis
+import enchant
+from geotext import GeoText
+
+
+d = enchant.Dict("fr_FR")
 
 
 def redis_job_query(keyword, city):
@@ -14,7 +19,7 @@ def redis_job_query(keyword, city):
     return container
 
 
-def create_tag(tag):
+def query_with_tag(tag):
     r = StrictRedis(host='localhost', port=6379, db=0)
     all_keys = r.keys()
     if tag in all_keys:
@@ -40,11 +45,7 @@ def create_tag(tag):
                     to_add[m_key] = []
                 to_add[m_key].append(matches)
 
-    if len(to_add) > 0:
-        for k in to_add.keys():
-            res = r.hget(tag, k)
-            res.append(to_add[k])
-            r.hset(tag, k, res)
+    return to_add
 
 
 def find_tag_in_entry(entry, tag):
@@ -60,7 +61,11 @@ def find_tag_in_entry(entry, tag):
         raise Exception("Type not handled")
 
 
+def clean_ugly_string(data):
+    return [w for w in data.split() if d.check(w)]
 
 
-
+def get_places(data):
+    geo = GeoText(data[0])
+    return geo.cities
 
