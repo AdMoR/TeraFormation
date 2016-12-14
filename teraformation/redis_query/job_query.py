@@ -2,7 +2,7 @@
 from __future__ import (absolute_import, division, print_function)
 from redis import StrictRedis
 import enchant
-from geotext import GeoText
+#from geotext import GeoText
 
 
 d = enchant.Dict("fr_FR")
