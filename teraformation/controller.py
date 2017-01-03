@@ -42,6 +42,7 @@ def get_data_from_db():
     # Get main params
     city = js.get('city')
     keyword = js.get('keyword') or ''
+    filters = js.get('filters') or None
 
     # Search in db
     r = redis.StrictRedis()
@@ -49,6 +50,16 @@ def get_data_from_db():
 
     if job_list:
         job_list = ast.literal_eval(job_list.decode('utf-8'))
+
+    if filters:
+        temp_job_list = job_list
+        job_list = []
+        for job in temp_job_list:
+            print(job['tags'])
+            for f in filters:
+                if'tags' in job.keys() and job['tags'] and f in job['tags']:
+                    job_list.append(job)
+                    break
 
     code, response = 200, {'status': 'ok',
                            'status_message': 'Query went fine',
