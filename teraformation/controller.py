@@ -44,7 +44,7 @@ def get_data_from_db():
     keyword = js.get('keyword') or ''
 
     # Search in db
-    r = StrictRedis()
+    r = redis.StrictRedis()
     job_list = r.hget(keyword, city)
 
     if job_list:
