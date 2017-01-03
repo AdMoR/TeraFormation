@@ -55,9 +55,12 @@ def get_data_from_db():
         temp_job_list = job_list
         job_list = []
         for job in temp_job_list:
-            print(job['tags'])
+            if 'tags' in job.keys():
+                print(job['tags'])
+            else:
+                continue
             for f in filters:
-                if'tags' in job.keys() and job['tags'] and f in job['tags']:
+                if 'tags' in job.keys() and job['tags'] and f in job['tags']:
                     job_list.append(job)
                     break
 
