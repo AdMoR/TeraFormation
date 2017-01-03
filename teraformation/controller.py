@@ -5,6 +5,8 @@ import json
 from flask import Blueprint, jsonify, request, session
 from werkzeug.wrappers import Response
 from teraformation.redis_query.job_query import redis_job_query, query_with_tag
+import redis
+import ast
 
 api_v1 = Blueprint('teraformation', __name__)
 
@@ -42,17 +44,11 @@ def get_data_from_db():
     keyword = js.get('keyword') or ''
 
     # Search in db
-    job_list = redis_job_query(keyword, city)
+    r = StrictRedis()
+    job_list = r.hget(keyword, city)
 
-    # If not in db parse all key to find the keyword and save the query in db
-    if not job_list or len(job_list) == 0:
-        query = query_with_tag(keyword)
-        if city and city in query.keys():
-            job_list = query[city]
-        else:
-            job_list = None
-            if not city:
-                job_list = query
+    if job_list:
+        job_list = ast.literal_eval(job_list.decode('utf-8'))
 
     code, response = 200, {'status': 'ok',
                            'status_message': 'Query went fine',
